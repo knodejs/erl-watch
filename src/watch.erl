@@ -41,8 +41,10 @@
 start_link() ->
     gen_server:start_link({local, ?SERVER}, ?MODULE, [], []).
 
+
 poll() ->
     gen_server:call(?SERVER, poll).
+
 
 reload() ->
     Changed = poll(),
@@ -54,11 +56,13 @@ reload() ->
             end,
             Changed).
 
+
 %% Blocking call to reload loop
 reload_loop() ->
     reload(),
     timer:sleep(1000),
     reload_loop().
+
 
 %% Non blocking call to reload loop
 start_reloader() ->
@@ -115,6 +119,7 @@ handle_call(poll, _From, State) ->
 
     {reply, Reload, NewState}.
 
+
 %%--------------------------------------------------------------------
 %% @private
 %% @doc
@@ -128,6 +133,7 @@ handle_call(poll, _From, State) ->
 handle_cast(_Msg, State) ->
     {noreply, State}.
 
+
 %%--------------------------------------------------------------------
 %% @private
 %% @doc
@@ -140,6 +146,7 @@ handle_cast(_Msg, State) ->
 %%--------------------------------------------------------------------
 handle_info(timeout, State) ->
     {noreply, State}.
+
 
 %%--------------------------------------------------------------------
 %% @private
@@ -155,6 +162,7 @@ handle_info(timeout, State) ->
 terminate(_Reason, _State) ->
     ok.
 
+
 %%--------------------------------------------------------------------
 %% @private
 %% @doc
@@ -166,6 +174,7 @@ terminate(_Reason, _State) ->
 code_change(_OldVsn, State, _Extra) ->
     {ok, State}.
 
+
 %%%===================================================================
 %%% Internal functions
 %%%===================================================================
@@ -174,8 +183,10 @@ find_apps_to_watch() ->
     lists:filter(fun(Dir) -> string:rstr(Dir, LibDir) == 0 end,
                  code:get_path()).
 
+
 md5sum_beam_files(Dirs) ->
     lists:sort(lists:flatten(md5sum_beam_files(Dirs, []))).
+
 
 md5sum_beam_files([], Result) ->
     Result;
@@ -191,8 +202,10 @@ md5sum_beam_files([Dir|Rest], Result) ->
     NewResult = [NameMD5|Result],
     md5sum_beam_files(Rest, NewResult).
 
+
 module_name(Filename) ->
     list_to_atom(rootname(basename(Filename))).
+
 
 find_changed_files([], _) ->
     [];
