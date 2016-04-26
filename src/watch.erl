@@ -110,7 +110,7 @@ init([]) ->
 %%--------------------------------------------------------------------
 handle_call(poll, _From, State) ->
     Dirs = find_apps_to_watch(),
-    io:format("Dirs : ~p~n",[Dirs]),
+    %%io:format("Dirs : ~p~n",[Dirs]),
     NewWatched = md5sum_beam_files(Dirs),
     Version = State#state.version,
     Watched = State#state.watched,
@@ -192,7 +192,8 @@ find_apps_to_watch() ->
     {ok, LibDir} = file:get_cwd(),
     %%lists:filter(fun(Dir) -> string:rstr(Dir, LibDir) == 0 end,
                  %%code:get_path()).
-    [LibDir++"./priv/src/app"].
+    %% TODO Change TO CONNFIG
+    [LibDir++"/priv/src/app"].
 
 
 md5sum_beam_files(Dirs) ->
@@ -203,7 +204,8 @@ md5sum_beam_files(Dirs) ->
 md5sum_beam_files([], Result) ->
     Result;
 md5sum_beam_files([Dir|Rest], Result) ->
-    io:format("Dir Monitor : ~p~n",[Dir]),
+    %%io:format("Dir Monitor : ~p~n",[Dir]),
+    %%TODO Change TO Config
     BeamFiles = wildcard(Dir ++ '/*.js'),
     NameMD5 = lists:map(
                 fun(FileName) ->
