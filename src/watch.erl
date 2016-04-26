@@ -191,25 +191,19 @@ code_change(_OldVsn, State, _Extra) ->
 %%% Internal functions
 %%%===================================================================
 find_apps_to_watch() ->
-    %%LibDir = "./priv/src/app",
     {ok, LibDir} = file:get_cwd(),
-    %%lists:filter(fun(Dir) -> string:rstr(Dir, LibDir) == 0 end,
-                 %%code:get_path()).
-    %% TODO Change TO CONNFIG
-    {ok,Folders}=watch_utils:recursively_list_dir(LibDir++"/priv/src/"),
-    Folders.
-    %%[LibDir++"/priv/src/app"].
+    %%{ok,Folders}=watch_utils:recursively_list_dir(LibDir++"/priv/src/"),
+    lists:filter(fun(X) -> filelib:is_dir(X) end, filelib:wildcard(LibDir++"/priv/src/*")).
+    %%Folders.
 
 
 md5sum_beam_files(Dirs) ->
-    %%io:format("Dirs ~p~n",[Dirs]),
     lists:sort(lists:flatten(md5sum_beam_files(Dirs, []))).
 
 
 md5sum_beam_files([], Result) ->
     Result;
 md5sum_beam_files([Dir|Rest], Result) ->
-    %%io:format("Dir Monitor : ~p~n",[Dir]),
     %%TODO Change TO Config
     BeamFiles = wildcard(Dir ++ '/*.js'),
     NameMD5 = lists:map(
