@@ -196,7 +196,8 @@ find_apps_to_watch() ->
     %%lists:filter(fun(Dir) -> string:rstr(Dir, LibDir) == 0 end,
                  %%code:get_path()).
     %% TODO Change TO CONNFIG
-    [LibDir++"/priv/src/app"].
+    watch_utils:recursively_list_dir(LibDir++"/priv/src/").
+    %%[LibDir++"/priv/src/app"].
 
 
 md5sum_beam_files(Dirs) ->
