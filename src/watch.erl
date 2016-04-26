@@ -201,7 +201,7 @@ code_change(_OldVsn, State, _Extra) ->
 %%%===================================================================
 folder_watch() ->
     {ok, LibDir} = file:get_cwd(),
-    io:format("LibDir : ~p~n",[LibDir]),
+    %%io:format("LibDir : ~p~n",[LibDir]),
     {ok,Folders}=watch_utils:recursively_list_dir(LibDir++"/priv/src/"),
     %%lists:filter(fun(X) -> filelib:is_dir(X) end, filelib:wildcard(LibDir++"/priv/src/")).
     Folders.
