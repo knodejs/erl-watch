@@ -8,3 +8,5 @@ build_info.txt
 ct_logs
 erl_crash.dump
 .eunit/
+_build
+rebar.lock
