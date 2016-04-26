@@ -110,8 +110,8 @@ init([]) ->
 %%--------------------------------------------------------------------
 handle_call(poll, _From, State) ->
     Dirs = find_apps_to_watch(),
+    io:format("Dirs : ~p~n",[Dirs]),
     NewWatched = md5sum_beam_files(Dirs),
-
     Version = State#state.version,
     Watched = State#state.watched,
 
@@ -188,10 +188,11 @@ code_change(_OldVsn, State, _Extra) ->
 %%% Internal functions
 %%%===================================================================
 find_apps_to_watch() ->
-    LibDir = "./priv/src/app",
-    
-    lists:filter(fun(Dir) -> string:rstr(Dir, LibDir) == 0 end,
-                 code:get_path()).
+    %%LibDir = "./priv/src/app",
+    {ok, LibDir} = file:get_cwd(),
+    %%lists:filter(fun(Dir) -> string:rstr(Dir, LibDir) == 0 end,
+                 %%code:get_path()).
+    [LibDir++"./priv/src/app"].
 
 
 md5sum_beam_files(Dirs) ->
