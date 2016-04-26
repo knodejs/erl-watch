@@ -5,9 +5,11 @@
 
 %% API
 -export([start_link/0]).
+-export([start/0]).
 -export([poll/0]).
 -export([reload/0]).
 -export([start_reloader/0]).
+
 
 %% gen_server callbacks
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
@@ -31,6 +33,9 @@
 %%% API
 %%%===================================================================
 
+start() ->
+  application:start(watch).
+
 %%--------------------------------------------------------------------
 %% @doc
 %% Starts the server
@@ -47,10 +52,12 @@ poll() ->
 
 
 reload() ->
+    %%io:format("Reload ~p~n",["Reload Code SSS"]),
     Changed = poll(),
     foreach(fun({reload, _, Module}) ->
-                    io:format("~nwatched module >> ~s << changed reloading~n",
+                    io:format("~nwatched test change module >> ~s << changed reloading~n",
                               [Module]),
+                    os:cmd("cd D:/ToGo/Mbk/travsock/priv & webpack --config webpack-production.config.js --progress --colors"),
                     code:purge(Module),
                     code:load_file(Module)
             end,
@@ -66,6 +73,7 @@ reload_loop() ->
 
 %% Non blocking call to reload loop
 start_reloader() ->
+    %%io:format("start_reloader ~p~n",["reload_loop test"]),
     {ok, spawn_link(?MODULE, reload_loop, [])}.
 
 %%%===================================================================
@@ -148,6 +156,7 @@ handle_info(timeout, State) ->
     {noreply, State}.
 
 
+
 %%--------------------------------------------------------------------
 %% @private
 %% @doc
@@ -180,18 +189,21 @@ code_change(_OldVsn, State, _Extra) ->
 %%%===================================================================
 find_apps_to_watch() ->
     LibDir = code:lib_dir(),
+
     lists:filter(fun(Dir) -> string:rstr(Dir, LibDir) == 0 end,
                  code:get_path()).
 
 
 md5sum_beam_files(Dirs) ->
+    %%io:format("Dirs ~p~n",[Dirs]),
     lists:sort(lists:flatten(md5sum_beam_files(Dirs, []))).
 
 
 md5sum_beam_files([], Result) ->
     Result;
 md5sum_beam_files([Dir|Rest], Result) ->
-    BeamFiles = wildcard(Dir ++ '/*.beam'),
+    io:format("Dir Monitor : ~p~n",[Dir]),
+    BeamFiles = wildcard(Dir ++ '/*.js'),
     NameMD5 = lists:map(
                 fun(FileName) ->
                         {ok, Contents} = file:read_file(FileName),
