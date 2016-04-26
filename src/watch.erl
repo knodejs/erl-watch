@@ -52,12 +52,13 @@ poll() ->
 
 
 reload() ->
-    %%io:format("Reload ~p~n",["Reload Code SSS"]),
+    {ok, LibDir} = file:get_cwd(),
+    PathWebPack=LibDir++"/priv/",
     Changed = poll(),
     foreach(fun({reload, _, Module}) ->
-                    io:format("~nwatched test change module >> ~s << changed reloading~n",
+                    io:format("~nwatched js change >> ~s << changed reloading~n",
                               [Module]),
-                    os:cmd("cd D:/ToGo/Mbk/travsock/priv & webpack --config webpack-production.config.js --progress --colors"),
+                    os:cmd("cd "++PathWebPack++" & webpack --config webpack-production.config.js --progress --colors"),
                     code:purge(Module),
                     code:load_file(Module)
             end,
