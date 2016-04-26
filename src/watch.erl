@@ -123,7 +123,7 @@ init([]) ->
 %%--------------------------------------------------------------------
 handle_call(poll, _From, State) ->
     Dirs = find_apps_to_watch(),
-    %%io:format("Dirs : ~p~n",[Dirs]),
+    io:format("Dirs : ~p~n",[Dirs]),
     NewWatched = md5sum_beam_files(Dirs),
     Version = State#state.version,
     Watched = State#state.watched,
