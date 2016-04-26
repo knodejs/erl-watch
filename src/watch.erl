@@ -10,7 +10,6 @@
 -export([reload/0]).
 -export([start_reloader/0]).
 
-
 %% gen_server callbacks
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
          terminate/2, code_change/3]).
@@ -123,7 +122,7 @@ init([]) ->
 %%--------------------------------------------------------------------
 handle_call(poll, _From, State) ->
     Dirs = find_apps_to_watch(),
-    io:format("Dirs : ~p~n",[Dirs]),
+    %%io:format("Dirs : ~p~n",[Dirs]),
     NewWatched = md5sum_beam_files(Dirs),
     Version = State#state.version,
     Watched = State#state.watched,
@@ -211,7 +210,7 @@ find_apps_to_watch() ->
     {ok, LibDir} = file:get_cwd(),
     ListDirs=folder_watch(),
     lists:filter(fun(Dir) -> 
-                    io:format("Dirs : ~p~n",[Dir]),
+                    %%io:format("Dirs : ~p~n",[Dir]),
                     string:rstr(Dir, LibDir) == 0 
                   end,
                  ListDirs).
