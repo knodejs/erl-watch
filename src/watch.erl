@@ -58,7 +58,9 @@ reload() ->
     foreach(fun({reload, _, Module}) ->
                     io:format("~nwatched js change >> ~s << changed reloading~n",
                               [Module]),
+                    io:format("~n-----------------Start Build WebPack---------------------------~n"),
                     os:cmd("cd "++PathWebPack++" & webpack --config webpack-production.config.js --progress --colors"),
+                    io:format("~n-----------------End Build WebPack---------------------------~n"),
                     code:purge(Module),
                     code:load_file(Module)
             end,
