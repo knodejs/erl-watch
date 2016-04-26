@@ -15,10 +15,10 @@
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
          terminate/2, code_change/3]).
 
--export([find_apps_to_watch/0]).
+-export([find_apps_to_watch/0,folder_watch/0]).
 -export([md5sum_beam_files/1]).
 -export([find_changed_files/2]).
--export([reload_loop/0]).
+-export([reload_loop/0,list_dir/1]).
 
 -import(filename, [basename/1, rootname/1]).
 -import(filelib, [wildcard/1]).
@@ -49,6 +49,16 @@ start_link() ->
 
 poll() ->
     gen_server:call(?SERVER, poll).
+
+
+list_dir(Dir) ->
+    case file:list_dir(Dir) of
+        {ok, Filenames} ->
+            lists:foreach(fun(Name) -> io:format("~s~n", [Name]) end, Filenames);
+        {error, enoent} ->
+            io:format("The directory(~s) does not exist.~n", [Dir]),
+            ng
+    end.
 
 
 reload() ->
@@ -190,11 +200,21 @@ code_change(_OldVsn, State, _Extra) ->
 %%%===================================================================
 %%% Internal functions
 %%%===================================================================
+folder_watch() ->
+    {ok, LibDir} = file:get_cwd(),
+    {ok,Folders}=watch_utils:recursively_list_dir(LibDir++"/priv/src/"),
+    %%lists:filter(fun(X) -> filelib:is_dir(X) end, filelib:wildcard(LibDir++"/priv/src/")).
+    Folders.
+
+
 find_apps_to_watch() ->
     {ok, LibDir} = file:get_cwd(),
-    %%{ok,Folders}=watch_utils:recursively_list_dir(LibDir++"/priv/src/"),
-    lists:filter(fun(X) -> filelib:is_dir(X) end, filelib:wildcard(LibDir++"/priv/src/*")).
-    %%Folders.
+    ListDirs=folder_watch(),
+    lists:filter(fun(Dir) -> 
+                    io:format("Dirs : ~p~n",[Dir]),
+                    string:rstr(Dir, LibDir) == 0 
+                  end,
+                 ListDirs).
 
 
 md5sum_beam_files(Dirs) ->
