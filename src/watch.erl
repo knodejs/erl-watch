@@ -196,7 +196,8 @@ find_apps_to_watch() ->
     %%lists:filter(fun(Dir) -> string:rstr(Dir, LibDir) == 0 end,
                  %%code:get_path()).
     %% TODO Change TO CONNFIG
-    watch_utils:recursively_list_dir(LibDir++"/priv/src/").
+    {ok,Folders}=watch_utils:recursively_list_dir(LibDir++"/priv/src/"),
+    Folders.
     %%[LibDir++"/priv/src/app"].
 
 
