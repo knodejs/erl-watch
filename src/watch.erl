@@ -188,8 +188,8 @@ code_change(_OldVsn, State, _Extra) ->
 %%% Internal functions
 %%%===================================================================
 find_apps_to_watch() ->
-    LibDir = code:lib_dir(),
-
+    LibDir = "./priv/src/app",
+    
     lists:filter(fun(Dir) -> string:rstr(Dir, LibDir) == 0 end,
                  code:get_path()).
 
